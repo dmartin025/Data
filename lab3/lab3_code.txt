@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np 
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("Lab3.csv")
+data = df.to_numpy()
+
+#Expressions 
+Time = data[:,0]
+potVolt = data[:,1]
+thermPow = data[:,2]
+Temperature = data[:,3]
+
+#Graph
+fig, ax = plt.subplots()
+
+ax.plot(Time,potVolt)
+ax.set_title('Potentiometer over Time')
+ax.set_xlabel('Time [s]')
+ax.set_ylabel('Voltage $[v]$')
+
+plt.grid(True)
+plt.show()
+
+fig, ax = plt.subplots()
+
+ax.plot(Time,thermPow)
+ax.set_title('Thermistor over Time')
+ax.set_xlabel('Time [s]')
+ax.set_ylabel('$\Delta$ Power [kW]')
+
+plt.grid(True)
+plt.show()
+
+fig, ax = plt.subplots()
+
+ax.plot(Time,Temperature)
+ax.set_title('Temperature over Time')
+ax.set_xlabel('Time [s]$')
+ax.set_ylabel('Temperature [K]')
+
+plt.grid(True)
+plt.show()
