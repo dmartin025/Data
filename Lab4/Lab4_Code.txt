@@ -1,0 +1,77 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from scipy.fft import fft, fftfreq
+from scipy.fft import rfft, rfftfreq
+from scipy.signal import find_peaks
+
+
+df = pd.read_csv("Lab4.csv")
+data = df.to_numpy()
+
+#Expressions 
+Time = data[:,0]
+Volt = data[:,1]
+
+#Graph
+fig, ax = plt.subplots()
+
+ax.plot(Time,Volt*(5/1023))
+ax.set_title('Voltage over Time')
+ax.set_xlabel('Time $[\mu s]$')
+ax.set_ylabel('Voltage $[v]$')
+
+plt.grid(True)
+plt.show()
+
+N = len(Time)
+
+yf = fft(Volt)
+xf = fftfreq(N, 0.001)
+fig, ax = plt.subplots()
+ax.plot(xf, np.abs(yf),color='blue')
+ax.set_xlabel('Frequency (1/Milisecond)')
+ax.set_ylabel('')
+ax.set_title('Cycles')
+ax.grid()
+plt.show()
+
+#Peaks
+for n in range(0,8):
+	peaks, _ = find_peaks(np.abs(yf), height=200000)
+	print('Peak number' + str(n+1) + 'is at: ' + str(peaks[n]) )
+	print('which corresponds to a frequency of '+str( xf[peaks[n]] )+' Milisecond')
+	fig, ax = plt.subplots()
+	ax.plot(xf, np.abs(yf),color='blue')
+	ax.plot(xf[peaks[n]],np.abs(yf[peaks[n]]) ,"x",color='red')
+	ax.set_xlabel('Frequency (1/Milisecond)')
+	ax.set_ylabel('Cycles')
+	ax.set_title('Signal')
+	ax.grid()
+	plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
