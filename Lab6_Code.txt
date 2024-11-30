@@ -1,0 +1,25 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load data
+df = pd.read_csv("Lab6.csv")
+data = df.to_numpy()
+
+# Expressions
+Time = data[:, 0] - 1007
+Vc = data[:, 1]
+Vs = data[:, 2]
+
+# Create a single plot
+plt.figure(figsize=(10, 6))
+plt.plot(Time, Vc, label='Capacitor Voltage', color='blue')
+plt.plot(Time, Vs, label='Square Wave', color='red')
+plt.title('Capacitor Voltage and Square Wave over Time')
+plt.xlabel('Time $[ms]$')
+plt.ylabel('Voltage $[v]$')
+plt.legend() 
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
