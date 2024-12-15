@@ -1,0 +1,86 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from scipy.fft import fft, fftfreq
+from scipy.fft import rfft, rfftfreq
+from scipy.signal import find_peaks
+from scipy.optimize import curve_fit
+
+
+df = pd.read_csv("LabProject.csv")
+data = df.to_numpy()
+
+#Expressions 
+Time = data[:,2]
+Distance = data[:,1] - 5.75
+
+
+#Graph
+fig, ax = plt.subplots()
+
+ax.plot(Time,Distance)
+ax.set_title('Distance over Time')
+ax.set_xlabel('Time $[s]$')
+ax.set_ylabel('Distance $[cm]$')
+
+plt.grid(True)
+plt.show()
+
+N = len(Time)
+
+yf = fft(Distance)
+xf = fftfreq(N, 1/20)
+fig, ax = plt.subplots()
+ax.plot(xf, np.abs(yf),color='blue')
+ax.set_xlabel('Frequency (1/Second)')
+ax.set_ylabel('')
+ax.set_title('Cycles')
+ax.grid()
+plt.show()
+
+#Peaks
+for n in range(0,8):
+	peaks, _ = find_peaks(np.abs(yf), height=50)
+	print('Peak number' + str(n+1) + 'is at: ' + str(peaks[n]) )
+	print('which corresponds to a frequency of '+str( xf[peaks[n]] )+' [Hz]')
+	fig, ax = plt.subplots()
+	ax.plot(xf, np.abs(yf),color='blue')
+	ax.plot(xf[peaks[n]],np.abs(yf[peaks[n]]) ,"x",color='red')
+	ax.set_xlabel('Frequency [Hz]')
+	ax.set_ylabel('Cycles')
+	ax.set_title('Signal')
+	ax.grid()
+	plt.show()
+
+
+#Expressions 
+Time = data[:,2]
+Distance = data[:,1] 
+
+#Guess Function 
+def Function(t, A, omega, phi, disp):
+    return A * (np.cos((omega*t) - phi)) + disp
+
+constants = curve_fit(Function, Time, Distance, p0=[2.00,5.26,1.89,5.74], bounds=([1.7,5.0,-2.0,5.0],[2.5,5.5,2.0,7.0]) )
+A = constants[0][0]
+omega = constants[0][1]
+phi = constants[0][2]
+disp = constants[0][3]
+function = Function(Time, A, omega, phi, disp)
+
+print('A = ' + str(A))
+print('omega = ' + str(omega))
+print('phi = ' + str(phi))
+print('disp = ' + str(disp))
+
+#Graph
+fig, ax = plt.subplots()
+ax.plot(Time,Distance, 'red', label='fit', linewidth=2)
+ax.scatter(Time, function, label='data', c='blue', s=2)
+ax.set_title('Distance over Time')
+ax.set_xlabel('Time $[s]$')
+ax.set_ylabel('Distance $[cm]$')
+
+plt.legend()
+plt.grid(True)
+plt.show()
